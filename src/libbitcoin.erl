@@ -3,7 +3,7 @@
 -on_load(init/0).
 
 -define(APPNAME, libbitcoin).
--define(LIBNAME, libbitcoin).
+-define(LIBNAME, 'erlang-libbitcoin').
 
 tx_decode(_) ->
     not_loaded(?LINE).

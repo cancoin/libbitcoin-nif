@@ -26,7 +26,7 @@ static ErlNifFunc nif_funcs[] =
 
 nifpp::TERM make_binary(ErlNifEnv* env, std::string str) {
     nifpp::binary newbin(str.length());
-    std::memcpy(newbin.data,  str.c_str(), str.length());
+    std::memcpy(newbin.data, str.c_str(), str.length());
     return nifpp::make(env, newbin);
 }
 
@@ -52,13 +52,13 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     for (const auto input: tx.inputs) {
         std::map<nifpp::str_atom, nifpp::TERM> input_map;
         std::map<nifpp::str_atom, nifpp::TERM> prev_input_map;
-        prev_input_map["hash"] = nifpp::make(env, btc256(input.previous_output.hash).to_string());
+        prev_input_map["hash"] = make_binary(env, btc256(input.previous_output.hash).to_string());
         prev_input_map["index"] = nifpp::make(env, input.previous_output.index);
         input_map["previous_output"] = nifpp::make(env, prev_input_map);
         const auto script_address = payment_address::extract(input.script);
         if (script_address)
-            input_map["address"] = nifpp::make(env, script_address.encoded());
-        input_map["script"] = nifpp::make(env, encode_base16(chain::script(input.script).to_data(true)));
+            input_map["address"] = make_binary(env, script_address.encoded());
+        input_map["script"] = make_binary(env, encode_base16(chain::script(input.script).to_data(true)));
         input_map["sequence"] = nifpp::make(env, input.sequence);
         inputs.push_back(nifpp::make(env, input_map));
     }
@@ -68,9 +68,9 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         std::map<nifpp::str_atom, nifpp::TERM> output_map;
         const auto script_address = payment_address::extract(output.script);
         if (script_address)
-            output_map["address"] = nifpp::make(env, script_address.encoded());
-        output_map["script_asm"] = nifpp::make(env, output.script.to_string());
-        output_map["script"] = nifpp::make(env, encode_base16(chain::script(output.script).to_data(true)));
+            output_map["address"] = make_binary(env, script_address.encoded());
+        output_map["script_asm"] = make_binary(env, output.script.to_string());
+        output_map["script"] = make_binary(env, encode_base16(chain::script(output.script).to_data(true)));
         output_map["value"] = nifpp::make(env, output.value);
         output_map["size"] = nifpp::make(env, output.serialized_size());
         outputs.push_back(nifpp::make(env, output_map));
