@@ -24,7 +24,11 @@ static ErlNifFunc nif_funcs[] =
     {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0}
 };
 
-
+nifpp::TERM make_binary(ErlNifEnv* env, std::string str) {
+    nifpp::binary newbin(str.length());
+    std::memcpy(newbin.data,  str.c_str(), str.length());
+    return nifpp::make(env, newbin);
+}
 
 ERL_NIF_TERM
 erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
@@ -40,7 +44,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     std::map<nifpp::str_atom, nifpp::TERM> map_tx;
     map_tx["version"] = nifpp::make(env, tx.version);
     map_tx["locktime"] = nifpp::make(env, tx.locktime);
-    map_tx["hash"] = nifpp::make(env, btc256(tx.hash()).to_string());
+    map_tx["hash"] = make_binary(env, btc256(tx.hash()).to_string());
     map_tx["coinbase"] = nifpp::make(env, tx.is_coinbase());
     map_tx["size"] = nifpp::make(env, tx.serialized_size());
     map_tx["value"] = nifpp::make(env, tx.total_output_value());
