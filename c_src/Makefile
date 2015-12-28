@@ -29,10 +29,10 @@ else ifeq ($(UNAME_SYS), Linux)
 endif
 
 CXXFLAGS += -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR)
-CXXFLAGS += $(shell pkg-config --cflags --static libbitcoin-explorer libbitcoin-consensus)
+CXXFLAGS += $(shell pkg-config --cflags --static libbitcoin)
 
-LDLIBS += -L $(ERL_INTERFACE_LIB_DIR) -L/usr/local/lib -lerl_interface -lei
-LDLIBS += $(shell pkg-config --libs --static libbitcoin-explorer libbitcoin-consensus)
+LDLIBS += -L $(ERL_INTERFACE_LIB_DIR) -lerl_interface -lei
+LDLIBS += $(shell pkg-config --libs --static libbitcoin)
 
 LDFLAGS += -shared
 
