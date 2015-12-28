@@ -85,7 +85,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         std::map<nifpp::str_atom, nifpp::TERM> output_map;
         const auto script_address = payment_address::extract(output.script, payment_address::mainnet_p2kh, payment_address::mainnet_p2sh);
         ErlNifUInt64 output_value = output.value;
-        long output_serialized_size = output.serialized_size();
+        ErlNifUInt64 output_serialized_size = output.serialized_size();
         if (script_address)
             output_map["address"] = make_binary(env, script_address.encoded());
         output_map["script_asm"] = make_binary(env, output.script.to_string());

@@ -1,14 +1,11 @@
 -module(libbitcoin).
--export([tx_decode/1, hd_new/1]).
+-export([tx_decode/1]).
 -on_load(init/0).
 
 -define(APPNAME, libbitcoin).
 -define(LIBNAME, 'libbitcoin').
 
 tx_decode(_) ->
-    not_loaded(?LINE).
-
-hd_new(_) ->
     not_loaded(?LINE).
 
 init() ->
