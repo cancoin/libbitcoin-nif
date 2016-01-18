@@ -19,4 +19,4 @@ logs
 _build
 TEST*.xml
 c_src/*.o
-priv/*.o
+priv/
