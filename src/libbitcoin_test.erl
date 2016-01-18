@@ -68,7 +68,7 @@ tx_decode_p2sh_in_test() ->
   ?assertEqual(Outputs, [#{address => <<"1GtpSrGhRGY5kkrNz4RykoqRQoJuG2L6DS">>,
                            script => <<"76a914ae56b4db13554d321c402db3961187aed1bbed5b88ac">>,
                            script_asm => <<"dup hash160 [ ae56b4db13554d321c402db3961187aed1bbed5b ] equalverify checksig">>,
-                           size => 32,
+                           size => 34,
                            value => 1000000}]).
 
 -endif.
