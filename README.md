@@ -25,6 +25,7 @@ Roadmap
 
 Right now this library only has one function which decodes transactions for bitcoin mainnet. In the future it would be nice if this library were to include more functions following libbitcoin-explorer's command set, or at least the commands that are well suited for NIF's. For the slower executing functions it will be important to use Erlang's dirty thread scheduler.
 
+```
 [ ] address_decode
 [ ] address_embed
 [ ] address_encode
@@ -67,3 +68,4 @@ Right now this library only has one function which decodes transactions for bitc
 [ ] tx_sign
 [ ] wif_to_ec
 [ ] wif_to_public
+```
