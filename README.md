@@ -6,8 +6,9 @@ An (very basic) Erlang NIF for Libbitcoin
 Requirements
 ------------
 
-Erlang 17.3+ (for dirty scheduler)
-Libbitcoin and all it's dependencies: https://github.com/libbitcoin/libbitcoin
+* Erlang 17.3+
+
+* Libbitcoin and all it's dependencies: https://github.com/libbitcoin/libbitcoin
 
 Build
 -----
