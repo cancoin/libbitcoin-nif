@@ -29,10 +29,10 @@ else ifeq ($(UNAME_SYS), Linux)
 endif
 
 CXXFLAGS += -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR)
-CXXFLAGS += $(shell pkg-config --cflags --static libbitcoin)
+CXXFLAGS += $(shell PKG_CONFIG_PATH=.libs/lib/pkgconfig pkg-config --cflags --static libbitcoin)
 
 LDLIBS += -L $(ERL_INTERFACE_LIB_DIR) -lerl_interface -lei
-LDLIBS += $(shell pkg-config --libs --static libbitcoin)
+LDLIBS += $(shell PKG_CONFIG_PATH=.libs/lib/pkgconfig pkg-config --libs --static libbitcoin)
 
 LDFLAGS += -shared
 
@@ -44,7 +44,7 @@ cpp_verbose = $(cpp_verbose_$(V))
 link_verbose_0 = @echo " LD    " $(@F);
 link_verbose = $(link_verbose_$(V))
 
-SOURCES := $(shell find $(C_SRC_DIR) -type f \( -name "*.c" -o -name "*.C" -o -name "*.cc" -o -name "*.cpp" \))
+SOURCES := erlang_libbitcoin_nif.cpp
 OBJECTS = $(addsuffix .o, $(basename $(SOURCES)))
 
 COMPILE_CPP = $(cpp_verbose) $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c
