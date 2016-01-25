@@ -15,6 +15,6 @@ case "$1" in
   	test -d .libs && exit 0
     (test -f  install.sh || wget https://raw.githubusercontent.com/libbitcoin/libbitcoin/master/install.sh)
     bash install.sh --disable-shared --with-tests=no --with-examples=no \
-                    --prefix=$dir/.libs --build-dir=$dir/.deps
+                    --build-boost --build-icu --prefix=$dir/.libs --build-dir=$dir/.deps
     ;;
 esac
