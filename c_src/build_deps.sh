@@ -20,6 +20,9 @@ case "$1" in
     bash install.sh --disable-shared --with-tests=no --with-examples=no \
                     --prefix=$dir/.libs --build-dir=$dir/.deps
 
-    cp $dir/.libs/lib/*.{a,la} ../priv/
+    for lib in libbitcoin.a libbitcoin.la libsecp256k1.a libsecp256k1.la
+    do
+      cp $dir/.libs/lib/$lib ../priv/
+    done
     ;;
 esac
