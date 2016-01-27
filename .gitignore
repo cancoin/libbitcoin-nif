@@ -19,7 +19,6 @@ logs
 _build
 TEST*.xml
 c_src/*.o
-priv/
 c_src/.deps/
 c_src/.libs/
 c_src/install.sh

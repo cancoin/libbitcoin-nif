@@ -22,7 +22,7 @@ case "$1" in
 
     for lib in libbitcoin.a libbitcoin.la libsecp256k1.a libsecp256k1.la
     do
-      cp $dir/.libs/lib/$lib ../priv/
+      cp $dir/.libs/lib/$lib $dir/../priv/
     done
     ;;
 esac
