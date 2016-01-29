@@ -6,19 +6,30 @@ An (very basic) Erlang NIF for Libbitcoin
 Requirements
 ------------
 
-* Erlang 17.3+
-
-* Libbitcoin and all it's dependencies: https://github.com/libbitcoin/libbitcoin
+* Erlang 17.3+ (for dirty thread scheduler)
 
 Build
 -----
 
-    $ make
-    $ make test
-    
-If you installed libbitcoin with a non-standard prefix you must specify it's pkg-config path
+On Debian/Ubuntu install libbitcoin's build dependancies with apt
 
-    $ PKG_CONFIG_PATH=/opt/libbitcoin/pkgconfig make
+    $ sudo apt-get install build-essential autoconf automake libtool pkg-config libboost-all-dev
+
+
+On OSX install libbitcoin's build dependancies with homebrew
+
+    $ brew install autoconf automake libtool pkgconfig wget boost
+
+
+Running `make` will download and install libbitcoin and it's dependancies, build
+them as shared libraries, then copy them to the `priv` directory.
+
+    $ make
+
+
+You must set LD_LIBRARY_PATH to include to this application's priv directory
+
+    $ LD_LIBRARY_PATH=`pwd`/priv make test
 
 
 Roadmap
@@ -64,7 +75,6 @@ Right now this library only has one function which decodes transactions for bitc
 [ ] stealth_secret
 [ ] stealth_shared
 [✓] tx_decode
-[ ] tx_decode
 [ ] tx_encode
 [ ] tx_sign
 [ ] wif_to_ec

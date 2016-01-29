@@ -11,18 +11,15 @@ case "$1" in
     rm -rf install.sh \
            $dir/.libs \
            $dir/.deps \
-           $dir/../priv/*.{so,a,la}
+           $dir/../priv/*
     ;;
 
   *)
     test -f ../priv/libbitcoin.la && exit 0
     (test -f  install.sh || wget https://raw.githubusercontent.com/libbitcoin/libbitcoin/master/install.sh)
-    bash install.sh --disable-shared --with-tests=no --with-examples=no \
+    bash install.sh --disable-static --with-tests=no --with-examples=no \
                     --prefix=$dir/.libs --build-dir=$dir/.deps
 
-    for lib in libbitcoin.a libbitcoin.la libsecp256k1.a libsecp256k1.la
-    do
-      cp $dir/.libs/lib/$lib $dir/../priv/
-    done
+    cp -r $dir/.libs/lib/* $dir/../priv/
     ;;
 esac
