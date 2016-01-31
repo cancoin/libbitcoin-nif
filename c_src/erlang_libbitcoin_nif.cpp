@@ -21,13 +21,14 @@ extern "C" {
 ERL_NIF_TERM erlang_libbitcoin_tx_decode(ErlNifEnv* env, int argc,
     const ERL_NIF_TERM argv[]);
 
-ERL_NIF_TERM erlang_libbitcoin_hd_new(ErlNifEnv* env, int argc,
+ERL_NIF_TERM erlang_libbitcoin_header_decode(ErlNifEnv* env, int argc,
     const ERL_NIF_TERM argv[]);
 
 }
 
 static ErlNifFunc nif_funcs[] = {
-    {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0}
+    {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0},
+    {"header_decode", 1, erlang_libbitcoin_header_decode, 0}
 };
 
 nifpp::TERM make_binary(ErlNifEnv* env, std::string str)
@@ -99,6 +100,31 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     return term;
 }
 
+ERL_NIF_TERM
+erlang_libbitcoin_header_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
+{
+    ErlNifBinary bin;
+    if (!enif_inspect_binary(env, argv[0], &bin)) {
+        return enif_make_badarg(env);
+    }
+
+    chain::header header;
+    header.from_data(make_data_chunk(env, &bin), false);
+    auto hash = encode_hash(header.hash());
+    auto previous_block_hash = encode_hash(header.previous_block_hash);
+    std::map<nifpp::str_atom, nifpp::TERM> map_header;
+    long serialized_size = header.serialized_size();
+    map_header["size"] = nifpp::make(env, serialized_size);
+    map_header["version"] = nifpp::make(env, header.version);
+    map_header["hash"] = make_binary(env, hash);
+    map_header["merkle"] = make_binary(env, encode_hash(header.merkle));
+    map_header["timestamp"] = nifpp::make(env, header.timestamp);
+    map_header["bits"] = nifpp::make(env, header.bits);
+    map_header["nonce"] = nifpp::make(env, header.nonce);
+    map_header["previous_block_hash"] = make_binary(env, previous_block_hash);
+    nifpp::TERM term = nifpp::make(env, map_header);
+    return term;
+}
 
 ERL_NIF_INIT(libbitcoin, nif_funcs, NULL, NULL, NULL, NULL );
 
