@@ -13,23 +13,9 @@
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
 using namespace bc;
+using namespace libbitcoin::chain;
 using namespace bc::config;
 using namespace bc::wallet;
-
-extern "C" {
-
-ERL_NIF_TERM erlang_libbitcoin_tx_decode(ErlNifEnv* env, int argc,
-    const ERL_NIF_TERM argv[]);
-
-ERL_NIF_TERM erlang_libbitcoin_header_decode(ErlNifEnv* env, int argc,
-    const ERL_NIF_TERM argv[]);
-
-}
-
-static ErlNifFunc nif_funcs[] = {
-    {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0},
-    {"header_decode", 1, erlang_libbitcoin_header_decode, 0}
-};
 
 nifpp::TERM make_binary(ErlNifEnv* env, std::string str)
 {
@@ -126,5 +112,48 @@ erlang_libbitcoin_header_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     return term;
 }
 
-ERL_NIF_INIT(libbitcoin, nif_funcs, NULL, NULL, NULL, NULL );
+ERL_NIF_TERM
+erlang_tx_signature_hash(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
+{
+    ErlNifBinary raw_tx;
+    unsigned long index;
+    ErlNifBinary raw_script;
+    unsigned long hash_type;
+
+    if (!enif_inspect_binary(env, argv[0], &raw_tx)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_ulong(env, argv[1], &index)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_inspect_binary(env, argv[2], &raw_script)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_ulong(env, argv[3], &hash_type)) {
+        return enif_make_badarg(env);
+    }
+
+    chain::transaction tx;
+    tx.from_data(make_data_chunk(env, &raw_tx));
+    auto script_data = make_data_chunk(env, &raw_script);
+
+    chain::script script_code =
+      chain::script::factory_from_data(script_data, false, chain::script::parse_mode::raw_data);
+
+    hash_digest signature_hash =
+      script::generate_signature_hash(tx, index, script_code, hash_type);
+
+    return nifpp::make(env, signature_hash);
+}
+
+static ErlNifFunc nif_funcs[] = {
+    {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0},
+    {"header_decode", 1, erlang_libbitcoin_header_decode, 0},
+    {"tx_signature_hash", 4, erlang_tx_signature_hash, 0}
+};
+
+ERL_NIF_INIT(libbitcoin, nif_funcs, NULL, NULL, NULL, NULL);
 

@@ -1,15 +1,18 @@
 -module(libbitcoin).
--export([tx_decode/1, header_decode/1]).
+-export([tx_decode/1, header_decode/1, tx_signature_hash/4]).
 
 -on_load(init/0).
 
 -define(APPNAME, libbitcoin).
 -define(LIBNAME, 'libbitcoin-nif').
 
-tx_decode(_) ->
+tx_decode(_RawTx) ->
     not_loaded(?LINE).
 
-header_decode(_) ->
+header_decode(_RawHeader) ->
+    not_loaded(?LINE).
+
+tx_signature_hash(_RawTx, _Index, _Script, _HashType) ->
     not_loaded(?LINE).
 
 init() ->
