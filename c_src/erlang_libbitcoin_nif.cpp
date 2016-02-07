@@ -12,10 +12,10 @@
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
-using namespace bc;
+using namespace libbitcoin;
 using namespace libbitcoin::chain;
-using namespace bc::config;
-using namespace bc::wallet;
+using namespace libbitcoin::config;
+using namespace libbitcoin::wallet;
 
 nifpp::TERM make_binary(ErlNifEnv* env, std::string str)
 {
@@ -58,7 +58,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         prev_input_map["hash"] = make_binary(env, btc256(input.previous_output.hash).to_string());
         prev_input_map["index"] = nifpp::make(env, input.previous_output.index);
         input_map["previous_output"] = nifpp::make(env, prev_input_map);
-        const auto script_address = payment_address::extract(input.script, payment_address::mainnet_p2kh, payment_address::mainnet_p2sh);
+        const auto script_address = payment_address::extract(input.script);
         if (script_address)
             input_map["address"] = make_binary(env, script_address.encoded());
         input_map["script_asm"] = make_binary(env, chain::script(input.script).to_string());
@@ -70,7 +70,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     std::list<nifpp::TERM> outputs;
     for (const auto output: tx.outputs) {
         std::map<nifpp::str_atom, nifpp::TERM> output_map;
-        const auto script_address = payment_address::extract(output.script, payment_address::mainnet_p2kh, payment_address::mainnet_p2sh);
+        const auto script_address = payment_address::extract(output.script);
         ErlNifUInt64 output_value = output.value;
         ErlNifUInt64 output_serialized_size = output.serialized_size();
         if (script_address)
