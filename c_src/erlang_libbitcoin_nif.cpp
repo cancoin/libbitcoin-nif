@@ -40,6 +40,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    uint32_t flags = 0x00;
     chain::transaction tx;
     tx.from_data(make_data_chunk(env, &bin));
     std::map<nifpp::str_atom, nifpp::TERM> map_tx;
@@ -61,7 +62,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         const auto script_address = payment_address::extract(input.script, payment_address::mainnet_p2kh, payment_address::mainnet_p2sh);
         if (script_address)
             input_map["address"] = make_binary(env, script_address.encoded());
-        input_map["script_asm"] = make_binary(env, chain::script(input.script).to_string());
+        input_map["script_asm"] = make_binary(env, chain::script(input.script).to_string(flags));
         input_map["script"] = make_binary(env, encode_base16(chain::script(input.script).to_data(false)));
         input_map["sequence"] = nifpp::make(env, input.sequence);
         inputs.push_back(nifpp::make(env, input_map));
@@ -75,7 +76,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         ErlNifUInt64 output_serialized_size = output.serialized_size();
         if (script_address)
             output_map["address"] = make_binary(env, script_address.encoded());
-        output_map["script_asm"] = make_binary(env, output.script.to_string());
+        output_map["script_asm"] = make_binary(env, output.script.to_string(flags));
         output_map["script"] = make_binary(env, encode_base16(chain::script(output.script).to_data(false)));
         output_map["value"] = nifpp::make(env, output_value);
         output_map["size"] = nifpp::make(env, output_serialized_size);
