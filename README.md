@@ -61,13 +61,14 @@ Right now this library only has one function which decodes transactions for bitc
 [ ] input_set
 [ ] input_sign
 [ ] input_validate
+[✓] input_signature_hash
 [ ] message_sign
 [ ] message_validate
 [ ] mnemonic_new
 [ ] mnemonic_to_seed
-[ ] script_decode
-[ ] script_encode
-[ ] script_to_address
+[✓] script_decode
+[✓] script_encode
+[✓] script_to_address
 [ ] seed
 [ ] stealth_decode
 [ ] stealth_encode
@@ -76,7 +77,6 @@ Right now this library only has one function which decodes transactions for bitc
 [ ] stealth_shared
 [✓] tx_decode
 [ ] tx_encode
-[ ] tx_sign
 [ ] wif_to_ec
 [ ] wif_to_public
 ```
