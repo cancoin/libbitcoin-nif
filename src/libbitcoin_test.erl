@@ -74,6 +74,50 @@ tx_decode_p2sh_in_test() ->
                            size => 34,
                            value => 1000000}]).
 
+
+-define(TXIN, #{
+  hash => hexstr_to_bin("97e06e49dfdd26c5a904670971ccf4c7fe7d9da53cb379bf9b442fc9427080b3"),
+  index => 0
+}).
+
+-define(TXOUT_KH, #{
+  address => <<"1966U1pjj15tLxPXZ19U48c99EJDkdXeqb">>,
+  amount => 30000
+}).
+
+-define(TXOUT_SH, #{
+  address => <<"3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC">>,
+  amount => 5000
+}).
+
+-define(TXOUT_STEALTH, #{
+  address => <<"vJmtuUb8ysKiM1HtHQF23FGfjGAKu5sM94UyyjknqhJHNdj5CZzwtpGzeyaATQ2HvuzomNVtiwsTJSWzzCBgCTtUZbRFpzKVq9MAUr">>,
+  amount => 10000,
+  seed => <<"deadbeefdeadbeef">>
+}).
+
+-define(TX, <<"010000000197e06e49dfdd26c5a904670971ccf4c7fe7d9da53cb379bf9b442fc9427080b30000000000ffffffff0430750000000000001976a91458b7a60f11a904feef35a639b6048de8dd4d9f1c88ac881300000000000017a914f815b036d9bbbce5e9f2a00abd1bf3dc91e95510870000000000000000456a43634c21ae4c49698643d947eee9d61e4942c94db8ad2a685bc62fd9cdc4071aed2338705c3d1dd43a6e06c7dacace1a929a7ceec44473af1c7b3700df891cdd0000000010270000000000001976a91425b69aa1cbd426586f5b1662a36e924acb01b5fd88ac00000000">>).
+
+tx_encode_test() ->
+  tx_encode_test(#{
+    inputs => [?TXIN],
+    outputs => [?TXOUT_KH, ?TXOUT_SH, ?TXOUT_STEALTH],
+    locktime => 0,
+    sequence => 16#FFFFFFFF,
+    tx_version => 1,
+    script_version => 5
+  }),
+  tx_encode_test(#{
+    inputs => [?TXIN],
+    outputs => [?TXOUT_KH, ?TXOUT_SH, ?TXOUT_STEALTH]
+  }),
+  ok.
+
+tx_encode_test(TxObj) ->
+  Tx = libbitcoin:tx_encode(TxObj),
+  ?assertEqual(?TX, Tx),
+  ok.
+
 header_decode_test() ->
   ?assertEqual(#{bits => 403253488,
                  hash => <<"00000000000000000495ef1dede300947fdb51a4bad6f85a9e113cc6f3d241d9">>,
@@ -84,7 +128,6 @@ header_decode_test() ->
                  timestamp => 1454207279,
                  version => 4}, libbitcoin:header_decode(?header)),
   ok.
-
 
 -define(SIGHASH_TX, hexstr_to_bin("0100000001b3807042c92f449bbf79b33ca59d7dfec7f4cc71096704a9c526dddf496ee0970000000000ffffffff0000000000")).
 -define(SIGHASH_INDEX, 0).
