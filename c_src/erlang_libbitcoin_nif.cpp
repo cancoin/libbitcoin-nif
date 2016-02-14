@@ -407,7 +407,7 @@ erlang_input_signature_hash(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
 
 static ErlNifFunc nif_funcs[] = {
     {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0},
-    {"tx_encode", 1, erlang_libbitcoin_tx_encode, 0},
+    {"do_tx_encode", 1, erlang_libbitcoin_tx_encode, 0},
     {"header_decode", 1, erlang_libbitcoin_header_decode, 0},
     {"script_decode", 1, erlang_script_decode, 0},
     {"script_encode", 1, erlang_script_encode, 0},
