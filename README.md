@@ -76,7 +76,7 @@ Right now this library only has one function which decodes transactions for bitc
 [ ] stealth_secret
 [ ] stealth_shared
 [✓] tx_decode
-[ ] tx_encode
+[✓] tx_encode
 [ ] wif_to_ec
 [ ] wif_to_public
 ```

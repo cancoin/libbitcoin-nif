@@ -106,29 +106,18 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     int tx_version;
     int script_version;
 
-    if (!nifpp::get(env, argv[0], tx_map)) {
+    if (!nifpp::get(env, argv[0], tx_map))
        return enif_make_badarg(env);
-    }
-
-    if (!nifpp::get(env, tx_map["inputs"], input_terms)) {
+    if (!nifpp::get(env, tx_map["inputs"], input_terms))
        return enif_make_badarg(env);
-    }
-
-    if (!nifpp::get(env, tx_map["outputs"], output_terms)) {
+    if (!nifpp::get(env, tx_map["outputs"], output_terms))
        return enif_make_badarg(env);
-    }
-
-    if (!tx_map["locktime"] || !nifpp::get(env, tx_map["locktime"], locktime)) {
+    if (!nifpp::get(env, tx_map["locktime"], locktime))
         locktime = 0;
-    }
-
-    if (!tx_map["tx_version"] || !nifpp::get(env, tx_map["tx_version"], tx_version)) {
+    if (!nifpp::get(env, tx_map["tx_version"], tx_version))
         tx_version = 1;
-    }
-
-    if (!tx_map["script_version"] || !nifpp::get(env, tx_map["script_version"], script_version)) {
+    if (!nifpp::get(env, tx_map["script_version"], script_version))
         script_version = 5;
-    }
 
     for (auto input_term: input_terms) {
       std::map<nifpp::str_atom, nifpp::TERM> input_map;
@@ -139,17 +128,12 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
       unsigned long index;
       unsigned long sequence;
 
-      if (!nifpp::get(env, input_term, input_map)) {
+      if (!nifpp::get(env, input_term, input_map))
          return enif_make_badarg(env);
-      }
-
-      if (!enif_inspect_binary(env, input_map["hash"], &hash)) {
+      if (!enif_inspect_binary(env, input_map["hash"], &hash))
           return enif_make_badarg(env);
-      }
-
-      if (!nifpp::get(env, input_map["index"], index)) {
+      if (!nifpp::get(env, input_map["index"], index))
           return enif_make_badarg(env);
-      }
 
       input.sequence = max_input_sequence;
       std::copy(hash.data, hash.data + hash.size, point.hash.begin());
@@ -160,9 +144,9 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
 
     for (auto output_term: output_terms) {
       std::map<nifpp::str_atom, nifpp::TERM> output_map;
-      if (!nifpp::get(env, output_term, output_map)) {
+
+      if (!nifpp::get(env, output_term, output_map))
          return enif_make_badarg(env);
-      }
 
       chain::output output;
       ErlNifUInt64 amount;
@@ -198,7 +182,8 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
       } else {
         wallet::stealth_address stealth(address_str);
 
-        if (stealth)
+        if (!stealth)
+          return enif_make_badarg(env);
 
         if (stealth.signatures() != 1)
           return enif_make_badarg(env);
@@ -255,7 +240,8 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    return  make_binary(env, encode_base16(chain::transaction(tx).to_data()));
+    auto encoded = encode_base16(chain::transaction(tx).to_data());
+    return make_binary(env, encoded);
 }
 
 ERL_NIF_TERM
