@@ -10,8 +10,6 @@
 #include "erl_nif.h"
 #include "nifpp.h"
 
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-
 using namespace bc;
 using namespace libbitcoin::chain;
 using namespace bc::config;
@@ -126,7 +124,6 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
       chain::point point;
       ErlNifBinary hash;
       unsigned long index;
-      unsigned long sequence;
 
       if (!nifpp::get(env, input_term, input_map))
          return enif_make_badarg(env);
@@ -151,7 +148,6 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
       chain::output output;
       ErlNifUInt64 amount;
       ErlNifBinary address_bin;
-      ErlNifBinary script_bin;
 
       if (!nifpp::get(env, output_map["amount"], amount))
           return enif_make_badarg(env);
