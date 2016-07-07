@@ -10,8 +10,14 @@
 #include "erl_nif.h"
 #include "nifpp.h"
 
+#ifdef ERL_NIF_DIRTY_JOB_CPU_BOUND
+#define LIBBITCOIN_NIF_FLAGS ERL_NIF_DIRTY_JOB_CPU_BOUND
+#else
+#define LIBBITCOIN_NIF_FLAGS 0
+#endif
+
 using namespace bc;
-using namespace libbitcoin::chain;
+using namespace bc::chain;
 using namespace bc::config;
 using namespace bc::wallet;
 
@@ -402,13 +408,13 @@ erlang_input_signature_hash(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
 }
 
 static ErlNifFunc nif_funcs[] = {
-    {"tx_decode", 1, erlang_libbitcoin_tx_decode, 0},
-    {"do_tx_encode", 1, erlang_libbitcoin_tx_encode, 0},
-    {"header_decode", 1, erlang_libbitcoin_header_decode, 0},
-    {"script_decode", 1, erlang_script_decode, 0},
-    {"script_encode", 1, erlang_script_encode, 0},
-    {"script_to_address", 2, erlang_script_to_address, 0},
-    {"input_signature_hash", 4, erlang_input_signature_hash, 0}
+    {"tx_decode", 1, erlang_libbitcoin_tx_decode, LIBBITCOIN_NIF_FLAGS},
+    {"do_tx_encode", 1, erlang_libbitcoin_tx_encode, LIBBITCOIN_NIF_FLAGS},
+    {"header_decode", 1, erlang_libbitcoin_header_decode, LIBBITCOIN_NIF_FLAGS},
+    {"script_decode", 1, erlang_script_decode, LIBBITCOIN_NIF_FLAGS},
+    {"script_encode", 1, erlang_script_encode, LIBBITCOIN_NIF_FLAGS},
+    {"script_to_address", 2, erlang_script_to_address, LIBBITCOIN_NIF_FLAGS},
+    {"input_signature_hash", 4, erlang_input_signature_hash, LIBBITCOIN_NIF_FLAGS}
 };
 
 ERL_NIF_INIT(libbitcoin, nif_funcs, NULL, NULL, NULL, NULL);
