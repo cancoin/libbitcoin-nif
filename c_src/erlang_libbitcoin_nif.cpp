@@ -3,8 +3,8 @@
 #include <sstream>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/bitcoin/chain/transaction.hpp>
-#include <bitcoin/bitcoin/config/btc256.hpp>
-#include <bitcoin/bitcoin/formats/base16.hpp>
+#include <bitcoin/bitcoin/config/hash256.hpp>
+#include <bitcoin/bitcoin/formats/base_16.hpp>
 
 #include <assert.h>
 #include "erl_nif.h"
@@ -56,7 +56,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     ErlNifUInt64 total_output_value = tx.total_output_value();
     map_tx["version"] = nifpp::make(env, tx.version);
     map_tx["locktime"] = nifpp::make(env, tx.locktime);
-    map_tx["hash"] = make_binary(env, btc256(tx.hash()).to_string());
+    map_tx["hash"] = make_binary(env, hash256(tx.hash()).to_string());
     map_tx["coinbase"] = nifpp::make(env, tx.is_coinbase());
     map_tx["size"] = nifpp::make(env, serialized_size);
     map_tx["value"] = nifpp::make(env, total_output_value);
@@ -64,7 +64,7 @@ erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     for (const auto input: tx.inputs) {
         std::map<nifpp::str_atom, nifpp::TERM> input_map;
         std::map<nifpp::str_atom, nifpp::TERM> prev_input_map;
-        prev_input_map["hash"] = make_binary(env, btc256(input.previous_output.hash).to_string());
+        prev_input_map["hash"] = make_binary(env, hash256(input.previous_output.hash).to_string());
         prev_input_map["index"] = nifpp::make(env, input.previous_output.index);
         input_map["previous_output"] = nifpp::make(env, prev_input_map);
         const auto script_address = payment_address::extract(input.script, payment_address::mainnet_p2kh, payment_address::mainnet_p2sh);
