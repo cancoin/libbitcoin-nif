@@ -19,14 +19,14 @@ C_SRC_OUTPUT ?= $(C_OUTPUT_DIR)/$(PROJECT).so
 UNAME_SYS := $(shell uname -s)
 ifeq ($(UNAME_SYS), Darwin)
 	CC ?= cc
-	CXXFLAGS ?= -O3 -arch x86_64 -Wall --std=c++11
+	CXXFLAGS ?= -O3 -arch x86_64 -Wall --std=c++14
 	LDFLAGS ?= -arch x86_64 -flat_namespace -undefined suppress
 else ifeq ($(UNAME_SYS), FreeBSD)
 	CC ?= cc
-	CXXFLAGS ?= -O3 -Wall --std=c++11
+	CXXFLAGS ?= -O3 -Wall --std=c++14
 else ifeq ($(UNAME_SYS), Linux)
 	CC ?= gcc
-	CXXFLAGS ?= -O3 -Wall --std=c++11
+	CXXFLAGS ?= -O3 -Wall --std=c++14
 endif
 
 CXXFLAGS += -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR)
