@@ -165,12 +165,12 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
       data_chunk decoded;
 
       if (payment) {
-        chain::operation::stack payment_ops;
+        chain::operation::list payment_ops;
         auto hash = payment.hash();
         if (payment.version() != script_version)
-            payment_ops = chain::operation::to_pay_key_hash_pattern(hash);
+            payment_ops = chain::script::to_pay_key_hash_pattern(hash);
         else if (payment.version() == script_version)
-            payment_ops = chain::operation::to_pay_script_hash_pattern(hash);
+            payment_ops = chain::script::to_pay_script_hash_pattern(hash);
         else
           return enif_make_badarg(env);
 
@@ -179,7 +179,7 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
 
       } else if (decode_base16(decoded, address_str)) {
         chain::script script;
-        script.from_data(decoded, false, chain::script::parse_mode::raw_data);
+        script.from_data(decoded, false);
         outputs.push_back({ amount, script });
       } else {
         wallet::stealth_address stealth(address_str);
@@ -209,17 +209,17 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
             return nifpp::make(env, 406);
 
         static constexpr uint64_t no_amount = 0;
-        const auto null_data = chain::operation::to_null_data_pattern(data);
+        const auto null_data = chain::script::to_null_data_pattern(data);
         const auto null_data_script = chain::script{ null_data };
         outputs.push_back({ no_amount, null_data_script });
 
-        chain::operation::stack payment_ops;
+        chain::operation::list payment_ops;
         auto hash = bitcoin_short_hash(stealth_key);
         auto version = stealth.version();
         if (version != script_version)
-            payment_ops = chain::operation::to_pay_key_hash_pattern(hash);
+            payment_ops = chain::script::to_pay_key_hash_pattern(hash);
         else if (version == script_version)
-            payment_ops = chain::operation::to_pay_script_hash_pattern(hash);
+            payment_ops = chain::script::to_pay_script_hash_pattern(hash);
         else
             return false;
 
@@ -255,7 +255,7 @@ erlang_libbitcoin_header_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     }
 
     chain::header header;
-    header.from_data(make_data_chunk(env, &bin), false);
+    header.from_data(make_data_chunk(env, &bin));
     auto hash = encode_hash(header.hash());
     auto previous_block_hash = encode_hash(header.previous_block_hash());
     std::map<nifpp::str_atom, nifpp::TERM> map_header;
@@ -283,7 +283,7 @@ erlang_script_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     }
 
     auto script_chunk = make_data_chunk(env, &bin_script);
-    script.from_data(script_chunk, false, chain::script::parse_mode::strict);
+    script.from_data(script_chunk, false);
 
     return make_binary(env, script.to_string(0xffffffff));
 }
@@ -323,7 +323,7 @@ erlang_script_to_address(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     }
 
     auto script_chunk = make_data_chunk(env, &bin_script);
-    script.from_data(script_chunk, false, chain::script::parse_mode::strict);
+    script.from_data(script_chunk, false);
     const wallet::payment_address address(script, version);
 
     return make_binary(env, address.encoded());
@@ -360,7 +360,7 @@ erlang_input_sign(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     auto script_chunk = make_data_chunk(env, &raw_script);
 
     chain::script script_code;
-    script_code.from_data(script_chunk, false, chain::script::parse_mode::raw_data);
+    script_code.from_data(script_chunk, false);
 
     hash_digest hash =
       script::generate_signature_hash(tx, index, script_code, hash_type);
@@ -399,7 +399,7 @@ erlang_input_signature_hash(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     auto script_chunk = make_data_chunk(env, &raw_script);
 
     chain::script script_code;
-    script_code.from_data(script_chunk, false, chain::script::parse_mode::raw_data);
+    script_code.from_data(script_chunk, false);
 
     hash_digest hash =
       script::generate_signature_hash(tx, index, script_code, hash_type);
