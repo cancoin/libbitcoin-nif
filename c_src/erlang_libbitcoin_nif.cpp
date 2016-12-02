@@ -20,6 +20,7 @@ using namespace bc;
 using namespace bc::chain;
 using namespace bc::config;
 using namespace bc::wallet;
+using namespace bc::machine;
 
 nifpp::TERM make_binary(ErlNifEnv* env, std::string str)
 {
@@ -165,7 +166,7 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
       data_chunk decoded;
 
       if (payment) {
-        chain::operation::list payment_ops;
+        machine::operation::list payment_ops;
         auto hash = payment.hash();
         if (payment.version() != script_version)
             payment_ops = chain::script::to_pay_key_hash_pattern(hash);
@@ -213,7 +214,7 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         const auto null_data_script = chain::script{ null_data };
         outputs.push_back({ no_amount, null_data_script });
 
-        chain::operation::list payment_ops;
+        machine::operation::list payment_ops;
         auto hash = bitcoin_short_hash(stealth_key);
         auto version = stealth.version();
         if (version != script_version)
