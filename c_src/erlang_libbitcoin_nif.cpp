@@ -200,18 +200,16 @@ erlang_libbitcoin_tx_encode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
         if (!decode_base16(seed, seed_str)) // || seed.size() < 16)
             return enif_make_badarg(env);
 
-        data_chunk data;
+        chain::script null_data_script;
         ec_secret ephemeral_secret;
-        if (!create_stealth_data(data, ephemeral_secret, stealth.filter(), seed))
-            return nifpp::make(env, 406);
+        if (!create_stealth_data(null_data_script, ephemeral_secret, stealth.filter(), seed))
+          return enif_make_badarg(env);
 
         ec_compressed stealth_key;
         if (!uncover_stealth(stealth_key, stealth.scan_key(), ephemeral_secret, stealth.spend_keys().front()))
-            return nifpp::make(env, 406);
+          return enif_make_badarg(env);
 
         static constexpr uint64_t no_amount = 0;
-        const auto null_data = chain::script::to_null_data_pattern(data);
-        const auto null_data_script = chain::script{ null_data };
         outputs.push_back({ no_amount, null_data_script });
 
         machine::operation::list payment_ops;
