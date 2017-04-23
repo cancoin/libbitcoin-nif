@@ -41,6 +41,13 @@ std::string make_string(ErlNifEnv* env, ErlNifBinary *bin)
     return data;
 }
 
+hash_digest make_hash_digest(ErlNifBinary *bin)
+{
+    hash_digest out;
+    std::reverse_copy(bin->data, bin->data + bin->size, out.begin());
+    return out;
+}
+
 ERL_NIF_TERM
 erlang_libbitcoin_tx_decode(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
 {
