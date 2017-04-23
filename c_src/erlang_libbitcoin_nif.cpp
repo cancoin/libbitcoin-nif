@@ -406,6 +406,24 @@ erlang_input_signature_hash(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
     return make_binary(env, encode_base16(hash));
 }
 
+ERL_NIF_TERM
+erlang_libbitcoin_spend_checksum(ErlNifEnv* env, int, const ERL_NIF_TERM argv[])
+{
+    ErlNifBinary hash_bin;
+    ErlNifUInt64 index;
+    if (!enif_inspect_binary(env, argv[0], &hash_bin)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!nifpp::get(env, argv[1], index)) {
+        return enif_make_badarg(env);
+    }
+
+    hash_digest hash = make_hash_digest(&hash_bin);
+    point point(hash, index);
+    return nifpp::make(env, point.checksum());
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"tx_decode", 1, erlang_libbitcoin_tx_decode, LIBBITCOIN_NIF_FLAGS},
     {"do_tx_encode", 1, erlang_libbitcoin_tx_encode, LIBBITCOIN_NIF_FLAGS},
@@ -413,7 +431,8 @@ static ErlNifFunc nif_funcs[] = {
     {"script_decode", 1, erlang_script_decode, LIBBITCOIN_NIF_FLAGS},
     {"script_encode", 1, erlang_script_encode, LIBBITCOIN_NIF_FLAGS},
     {"script_to_address", 2, erlang_script_to_address, LIBBITCOIN_NIF_FLAGS},
-    {"input_signature_hash", 4, erlang_input_signature_hash, LIBBITCOIN_NIF_FLAGS}
+    {"input_signature_hash", 4, erlang_input_signature_hash, LIBBITCOIN_NIF_FLAGS},
+    {"spend_checksum", 2, erlang_libbitcoin_spend_checksum, LIBBITCOIN_NIF_FLAGS}
 };
 
 ERL_NIF_INIT(libbitcoin, nif_funcs, NULL, NULL, NULL, NULL);

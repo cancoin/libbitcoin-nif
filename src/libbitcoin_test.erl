@@ -161,4 +161,12 @@ input_signature_hash_test() ->
   ?assertEqual(?SIGHASH, Encoded),
   ok.
 
+spend_checksum_test() ->
+  ?assertEqual(16#FFFFFFFFFFFFFFFF, libbitcoin:spend_checksum(hexstr_to_bin("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 16#FFFFFFFF)),
+  ?assertEqual(0, libbitcoin:spend_checksum(hexstr_to_bin("0000000000000000000000000000000000000000000000000000000000000000"), 0)),
+  ?assertEqual(16#AAAAAAAAAAAA8001, libbitcoin:spend_checksum(hexstr_to_bin("000000000000000000000000aaaaaaaaaaaaaaaa000000000000000000000000"), 1)),
+  ?assertEqual(16#1234567AAAACDEF, libbitcoin:spend_checksum(hexstr_to_bin("ffffffffffffffffffffffff01234567aaaaaaaaffffffffffffffffffffffff"), 16#89ABCDEF)),
+  ok.
+
+
 -endif.
